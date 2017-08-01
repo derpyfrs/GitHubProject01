@@ -4,13 +4,16 @@ var apiRoot = "https://" + process.env.GITHUB_USER+ ':' + process.env.GITHUB_TOK
 var fs = require('fs');
 var userInput = process.argv.slice(2);
 
-// console.log('Welcome to the GitHub Avatar Downloader!');
+if (userInput.length !== 2) {
+  console.log('Incorrect input, please provide Repo Owner and Repo Name');
+  return;
+}
 
 function getRepoContributors(repoOwner, repoName, cb) {
 
- request.get({
-  url: apiRoot + "/repos/" + repoOwner  + "/" + repoName + "/contributors",
-  headers: {
+  request.get({
+    url: apiRoot + "/repos/" + repoOwner  + "/" + repoName + "/contributors",
+    headers: {
       'User-Agent': 'derpyfrs'
     }
   },
@@ -19,15 +22,10 @@ function getRepoContributors(repoOwner, repoName, cb) {
   });
 }
 
-
-if(userInput.length !== 2){
-  console.log('Incorrect input, please provide Repo Owner and Repo Name');
-  return;
-}
-getRepoContributors(userInput[0], userInput[1], function(err, result) {
+getRepoContributors(userInput[0], userInput[1], (err, result) => {
   console.log("Errors:", err);
 
-  result.forEach(function(user){
+  result.forEach(function(user) {
     var filePath = './' + user.login + '.jpeg';
     console.log(user.avatar_url);
     downloadImageByURL(user.avatar_url, filePath);
